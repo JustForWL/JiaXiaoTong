@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+	     <RelativeLayout 
+	         android:id="@+id/teacher_layout"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_marginTop="2dp">
+		    <ImageView 
+		        android:id="@+id/teacher_icon"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content" 
+		        android:focusable="false"
+		        android:layout_alignParentLeft="true"
+		        android:layout_alignParentTop="true"/>
+	         <TextView 
+	             android:id="@+id/teacher_role"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_toRightOf="@id/teacher_icon"
+	             android:layout_marginLeft="10dp"
+	             style="@style/teacherRoleStyle"/> 
+	         <TextView 
+	             android:id="@+id/teacher_name"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_toRightOf="@id/teacher_icon"
+	             android:layout_marginLeft="10dp"
+	             android:layout_below="@id/teacher_role"
+	             android:layout_marginTop="5dp"
+	             style="@style/teacherNameStyle"/>
+	     </RelativeLayout>
+
+</LinearLayout>

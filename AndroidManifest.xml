@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.jiaxiaotong"
+    android:versionCode="1"
+    android:versionName="1.0" >
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RUN_INSTRUMENTATION" />
+    
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.BaseActivity">
+        </activity>
+        <activity
+            android:name=".activity.ParentFrame">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity">
+        </activity>
+        <activity 
+            android:name=".activity.TeacherFrame">
+        </activity>
+        <activity
+            android:name=".activity.HeadTeacherFrame">
+        </activity>
+        <activity
+            android:name=".activity.ChatActivity" 
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <uses-library android:name="android.test.runner" />
+    </application>
+    
+		<instrumentation android:name="android.test.InstrumentationTestRunner"
+		    android:targetPackage="com.example.jiaxiaotong" android:label="aaa" />
+		
+</manifest>

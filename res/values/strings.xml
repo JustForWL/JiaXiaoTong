@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">家校通</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">设置</string>
+    <string name="action_search">Search</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="Infos">公告记录</string>
+    <string name="stu_class">班级成员</string>
+    <string name="tcher_info">教师信息</string>
+    <string name="my_kid">我的孩子</string>
+    <string name="action_qunliao">发起聊天</string>
+    <string name="action_feedback">意见反馈</string>
+    <string name="login_user_hint">帐号</string>
+	<string name="login_passwd_hint">密码</string>
+	<string name="main_login">登录</string>
+	<string name="net_disconnect_hint">目前没有网络</string>
+	<string name="back">返回</string>
+	<string name="send">发送</string>
+</resources>
