@@ -3,12 +3,14 @@ package com.example.jiaxiaotong.fragment;
 import java.util.ArrayList;
 
 import com.example.jiaxiaotong.R;
+import com.example.jiaxiaotong.activity.ChatActivity;
 import com.example.jiaxiaotong.bean.TeacherUserBean;
 import com.example.jiaxiaotong.dao.TeacherUserDB;
 import com.example.jiaxiaotong.utils.Logger;
 import com.example.jiaxiaotong.utils.Util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -72,10 +75,14 @@ public class TchFragment extends Fragment{
 	class TeacherAdapter extends BaseAdapter {
 		private ArrayList<TeacherUserBean> teachers = null;
 	    private LayoutInflater layoutInflater = null;
-	    
+	    private static final String TALK = "talkTo";
+        private static final String ACCOUNT = "account";
+        private Context context;
+        
 		public TeacherAdapter(Context context, ArrayList<TeacherUserBean> teachers) {
 			this.teachers = teachers;
 			layoutInflater = LayoutInflater.from(context);
+			this.context = context;
 		}
 		
 		@Override
@@ -99,7 +106,7 @@ public class TchFragment extends Fragment{
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			TeacherUserBean teacher = (TeacherUserBean) this.teachers.get(position);
+			final TeacherUserBean teacher = (TeacherUserBean) this.teachers.get(position);
 			ViewHolder viewHolder = null;
 			if(null == convertView) {
 				convertView = layoutInflater.inflate(R.layout.teacher_item, null);
@@ -107,6 +114,20 @@ public class TchFragment extends Fragment{
 				viewHolder.icon = (ImageView) convertView.findViewById(R.id.teacher_icon);
 				viewHolder.role = (TextView) convertView.findViewById(R.id.teacher_role);
 				viewHolder.name = (TextView) convertView.findViewById(R.id.teacher_name);
+				viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.teacher_layout);
+				viewHolder.layout.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Bundle bundle = new Bundle();
+						bundle.putString(TALK, teacher.getUserName());
+						bundle.putString(ACCOUNT, teacher.getUserAccount());
+						Intent intent = new Intent(context, ChatActivity.class);
+						intent.putExtras(bundle);
+						startActivity(intent);
+					}
+				});
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
@@ -121,5 +142,6 @@ public class TchFragment extends Fragment{
 		public ImageView icon;
 		public TextView name;
 		public TextView role;
+		public RelativeLayout layout;
 	}
 }

@@ -1,16 +1,21 @@
 package com.example.jiaxiaotong.utils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
+import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.GroupChatInvitation;
 import org.jivesoftware.smackx.PrivateDataManager;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.packet.ChatStateExtension;
 import org.jivesoftware.smackx.packet.LastActivity;
 import org.jivesoftware.smackx.packet.OfflineMessageInfo;
@@ -30,7 +35,6 @@ import org.jivesoftware.smackx.provider.StreamInitiationProvider;
 import org.jivesoftware.smackx.provider.VCardProvider;
 import org.jivesoftware.smackx.provider.XHTMLExtensionProvider;
 import org.jivesoftware.smackx.search.UserSearch;
-
 import com.example.jiaxiaotong.constants.App;
 
 /**
@@ -42,6 +46,7 @@ public class XMPPManager {
 	private static XMPPManager instance = null;
     private XMPPConnection connection=null;
     private static String SUCCESS="SUCCESS";
+   
     private XMPPManager( ){
         /**
         Manages providers for parsing custom XML sub-documents of XMPP packets. Two types of providers exist:
@@ -127,7 +132,7 @@ public class XMPPManager {
     			App.PORT,
     			App.DEVICE);
     	//cf.setDebuggerEnabled(true);  //开启debug模式
-    	cf.setSendPresence(true);
+    	cf.setSendPresence(false);
     	cf.setCompressionEnabled(false);  //是否对流进行压缩
     	cf.setSASLAuthenticationEnabled(false); //是否开启SASL 登陆验证
     	connection = new XMPPConnection(cf);

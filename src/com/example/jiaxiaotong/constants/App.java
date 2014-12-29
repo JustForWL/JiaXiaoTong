@@ -26,4 +26,11 @@ public class App {
 	public static final String DATABASE_NAME = "JiaXiaoTong.db";
 	public static final int DATABASE_VERSION = 1;
 	public static final String CURRENTCHILD = "currentChild";
+	public static final String SERVER_DOMAIN = "@www.shenma.app.com";
+	public static final String TALK = "talkTo";
+    public static final String ACCOUNT = "account";
+    public static final String CLASSNAME= "className";
+	public static final String CHILDNAME = "childName";
+	public static final String CONFERENCE = "@conference.www.shenma.app.com";
+    public static int NotificationId = 0;
 }

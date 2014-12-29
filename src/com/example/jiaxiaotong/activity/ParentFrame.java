@@ -5,16 +5,21 @@ import java.lang.reflect.Method;
 
 
 import com.example.jiaxiaotong.R;
+import com.example.jiaxiaotong.constants.App;
+import com.example.jiaxiaotong.dao.ChildDB;
 import com.example.jiaxiaotong.fragment.InfoFragment;
 import com.example.jiaxiaotong.fragment.KidFragment;
 import com.example.jiaxiaotong.fragment.StuFragment;
 import com.example.jiaxiaotong.fragment.TchFragment;
 import com.example.jiaxiaotong.utils.Logger;
+import com.example.jiaxiaotong.utils.SharePreferencesUtil;
+
 import android.app.ActionBar.TabListener;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -62,7 +67,19 @@ public class ParentFrame extends BaseFrame {
             case R.id.action_search:
 
                 return true;
-
+            case R.id.action_qunliao:
+            	Intent intent = new Intent(getApplicationContext(), MultiChatActivity.class);
+            	Bundle bundle = new Bundle();
+            	//String childName = SharePreferencesUtil.readCurrentChild(getApplicationContext());
+            	String childName = "刘沛涵";
+            	bundle.putString(App.CHILDNAME, childName);
+            	ChildDB cdb = new ChildDB(getApplicationContext());
+            	String className = cdb.getClassName(childName);
+            	bundle.putString(App.CLASSNAME, className);
+            	bundle.putString(App.ACCOUNT, className + App.CONFERENCE);
+            	intent.putExtras(bundle);
+            	startActivity(intent);
+            	return true;
         }
 
         //noinspection SimplifiableIfStatement

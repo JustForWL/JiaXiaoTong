@@ -21,6 +21,7 @@ public class ParentUserDB extends DBConnection{
     private final String USER_NAME = "user_name";
     private final String USER_ICONADDR = "user_icon_addr";
     private final String USER_CLASSMATE = "user_classmate";
+    private final String USER_CLASSNAME = "user_class_name";
     
 	public ParentUserDB(Context context) {
 		super(context);
@@ -32,10 +33,10 @@ public class ParentUserDB extends DBConnection{
 		// TODO Auto-generated method stub
 		final SQLiteDatabase db = getReadableDatabase();
 		String sql = "CREATE TABLE IF NOT EXISTS " + USER_TABLE + " (" + 
-					USER_ACCOUNT + " text primary key not null, " + 
+					USER_ACCOUNT + " text not null, " + 
 				    USER_NAME + " text not null, " + 
 				    USER_ICONADDR + " text not null, " + 
-				    USER_CLASSMATE + " text not null" + 
+				    USER_CLASSMATE + " text not null" +
 				    ");";
 		db.execSQL(sql);
 		//super.onCreate(db);
@@ -94,7 +95,8 @@ public class ParentUserDB extends DBConnection{
 		try{	
 			final SQLiteDatabase db = getReadableDatabase();
 			Cursor cursor;
-			cursor = db.query(USER_TABLE, new String[]{USER_ACCOUNT, USER_NAME, USER_ICONADDR}, 
+			cursor = db.query(USER_TABLE, new String[]{USER_ACCOUNT, USER_NAME, 
+					USER_ICONADDR}, 
 					USER_CLASSMATE + "='" + classmate + "'", 
 					null, null, null, USER_ACCOUNT, null);
 			if(cursor.moveToFirst()) {
@@ -115,4 +117,45 @@ public class ParentUserDB extends DBConnection{
 		return users;
 	}
 	
+//	public ParentUserBean getUserByClassmateAndAccount(String account, String classmate) {
+//		ParentUserBean user = new ParentUserBean();
+//		try{
+//			final SQLiteDatabase db = getReadableDatabase();
+//			Cursor cursor;
+//			cursor = db.query(USER_TABLE, new String[]{USER_NAME, USER_ICONADDR, USER_CLASSNAME}, 
+//						null, null, null, null, null, null);
+//			if(cursor.moveToFirst()) {
+//				user.setUserAccount(account);
+//				user.setUserName(cursor.getString(cursor.getColumnIndex(USER_NAME)));
+//				user.setIconAddr(cursor.getString(cursor.getColumnIndex(USER_ICONADDR)));
+//				user.setClassName(cursor.getString(cursor.getColumnIndex(USER_CLASSNAME)));
+//				user.setClassmate(classmate);
+//			}
+//			cursor.close();
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//		return user;
+//	}
+	
+	public ParentUserBean getUserByNameAndAccount(String name, String account) {
+		ParentUserBean user = new ParentUserBean();
+		try{
+			final SQLiteDatabase db = getReadableDatabase();
+			Cursor cursor;
+			cursor = db.query(USER_TABLE, new String[]{USER_ICONADDR, USER_CLASSMATE}, 
+						USER_ACCOUNT + "='" + account + "' and " + USER_NAME + "='" + name +"'"
+						, null, null, null, null, null);
+			if(cursor.moveToFirst()) {
+				user.setUserAccount(account);
+				user.setUserName(name);
+				user.setIconAddr(cursor.getString(cursor.getColumnIndex(USER_ICONADDR)));
+				user.setClassmate(cursor.getString(cursor.getColumnIndex(USER_CLASSMATE)));
+			}
+			cursor.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
 }

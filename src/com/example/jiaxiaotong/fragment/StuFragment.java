@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.example.jiaxiaotong.R;
+import com.example.jiaxiaotong.activity.AskForLeave;
 import com.example.jiaxiaotong.activity.ChatActivity;
 import com.example.jiaxiaotong.bean.ParentUserBean;
+import com.example.jiaxiaotong.constants.App;
 import com.example.jiaxiaotong.dao.ParentUserDB;
 import com.example.jiaxiaotong.utils.Logger;
 import com.example.jiaxiaotong.utils.SharePreferencesUtil;
@@ -82,12 +84,9 @@ public class StuFragment extends Fragment {
 		pdb.saveUser(b2);
 	}
 	
-	class UserAdapter extends BaseAdapter implements OnClickListener{
+	class UserAdapter extends BaseAdapter{
         private ArrayList<ParentUserBean> parents = null;
         private LayoutInflater layoutInflater = null;
-        private ViewHolder viewHolder = null;
-        private static final String TALK = "talkTo";
-        private static final String ACCOUNT = "account";
         private Context context = null;
         public UserAdapter(Context context, ArrayList<ParentUserBean> parents) {
         	this.context = context;
@@ -115,14 +114,28 @@ public class StuFragment extends Fragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			ParentUserBean mParent = (ParentUserBean) this.parents.get(position);
+			final ParentUserBean mParent = (ParentUserBean) this.parents.get(position);
+			ViewHolder viewHolder = null;
 			if(null == convertView) {
 				convertView = layoutInflater.inflate(R.layout.student_item, null);
 				viewHolder = new ViewHolder();
 				viewHolder.icon = (ImageView) convertView.findViewById(R.id.userIcon);
 				viewHolder.name = (TextView) convertView.findViewById(R.id.userName);
 				viewHolder.layout = (LinearLayout) convertView.findViewById(R.id.student_layout);
-				viewHolder.layout.setOnClickListener(this); 
+				viewHolder.layout.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Bundle bundle = new Bundle();
+						bundle.putString(App.TALK, mParent.getUserName());
+						bundle.putString(App.ACCOUNT, mParent.getUserAccount());
+						Intent intent = new Intent(context, ChatActivity.class);
+						intent.putExtras(bundle);
+						startActivity(intent);
+						
+					}
+				});
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
@@ -131,19 +144,7 @@ public class StuFragment extends Fragment {
 			viewHolder.name.setText(mParent.getUserName());
 			viewHolder.account = mParent.getUserAccount();
 			return convertView;
-		}
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			Bundle bundle = new Bundle();
-			bundle.putString(TALK, (String) viewHolder.name.getText());
-			bundle.putString(ACCOUNT, viewHolder.account);
-			Intent intent = new Intent(this.context, ChatActivity.class);
-			intent.putExtras(bundle);
-			startActivity(intent);
-		}
-		
-		
+		}	
 		
 	}
 	

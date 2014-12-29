@@ -36,14 +36,14 @@
         </activity>
         <activity
             android:name=".activity.ParentFrame">
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.LoginActivity">
         </activity>
         <activity 
             android:name=".activity.TeacherFrame">
@@ -55,6 +55,20 @@
             android:name=".activity.ChatActivity" 
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
+        <activity
+            android:name=".activity.MultiChatActivity" 
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity
+            android:name=".activity.AskForLeave">
+        </activity>
+        <service
+            android:name=".service.ReceiverService"
+            android:enabled="true">
+            <intent-filter> 
+                <action android:name="com.example.jiaxiaotong.service.ReceiverService" />
+            </intent-filter>           
+        </service>
         <uses-library android:name="android.test.runner" />
     </application>
     

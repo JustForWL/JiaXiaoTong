@@ -19,15 +19,15 @@ import android.database.sqlite.SQLiteStatement;
 public class ChatMessageDB extends DBConnection {
 	private final String MESSAGE_TABLE = "Message";
 	private final String MESSAGE_ID = "id"; 
-	private final String MESSAGE_FROM = "from";
-	private final String MESSAGE_TO = "to";
+	private final String MESSAGE_FROM = "from_name";
+	private final String MESSAGE_TO = "to_name";
 	private final String MESSAGE_CONTENT = "content";
 	private final String MESSAGE_ISREAD = "read";
 	private final String MESSAGE_ISMULTICAST = "multicast";
 	private final String MESSAGE_FROM_GROUP = "from_group";
 	private final String MESSAGE_DATETIME = "date";
-	private final String MESSAGE_FROM_ACCOUNT = "fromAccount";
-	private final String MESSAGE_TO_ACCOUNT = "toAcconut";
+	private final String MESSAGE_FROM_ACCOUNT = "from_account";
+	private final String MESSAGE_TO_ACCOUNT = "to_acconut";
 	
 	public ChatMessageDB(Context context) {
 		super(context);
@@ -49,9 +49,7 @@ public class ChatMessageDB extends DBConnection {
 					MESSAGE_FROM_ACCOUNT + " text not null, " +
 					MESSAGE_TO_ACCOUNT + " text not null" + 
 					");";
-		Logger.i(sql);
 		db.execSQL(sql);
-		Logger.i("create table ok!");
 		super.onCreate(db);
 	}
 
@@ -66,13 +64,14 @@ public class ChatMessageDB extends DBConnection {
 		db.beginTransaction();
 		try {
 			//SQLiteStatement stmt = null;
-			String sql = "insert into " + MESSAGE_TABLE + " values(null, ?, ?, ?, ?, ?, ?, ?, ?);";
+			String sql = "insert into " + MESSAGE_TABLE + " values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			for(ChatMessageBean chatMessage: chatMessages) {
 				db.execSQL(sql, new Object[]{chatMessage.getFrom(), 
 											chatMessage.getTo(),
 											chatMessage.getContent(),
 											chatMessage.getIsRead(),
 											chatMessage.getIsMulticast(),
+											chatMessage.getFromGroup(),
 											chatMessage.getDate().getTime(),
 											chatMessage.getFromAccount(),
 											chatMessage.getToAccount()
@@ -92,13 +91,15 @@ public class ChatMessageDB extends DBConnection {
 	
 	public boolean saveChatMessage(ChatMessageBean chatMessage) {
 		final SQLiteDatabase db = getWritableDatabase();
-		String sql = "insert into " + MESSAGE_TABLE + " values(null, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "insert into " + MESSAGE_TABLE + " values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		try{
-			db.execSQL(sql, new Object[]{chatMessage.getFrom(), 
+			db.execSQL(sql, new Object[]{
+					chatMessage.getFrom(), 
 					chatMessage.getTo(),
 					chatMessage.getContent(),
 					chatMessage.getIsRead(),
 					chatMessage.getIsMulticast(),
+					chatMessage.getFromGroup(),
 					chatMessage.getDate().getTime(),
 					chatMessage.getFromAccount(),
 					chatMessage.getToAccount()
@@ -155,7 +156,7 @@ public class ChatMessageDB extends DBConnection {
 		return count;
 	}
 	
-	public ArrayList<ChatMessageBean> getChatMessagesBySource(String source) {
+	public ArrayList<ChatMessageBean> getChatMessagesBySource(String source, String name) {
 		ArrayList<ChatMessageBean> chatMessages = new ArrayList<ChatMessageBean>();
 		try{
 			final SQLiteDatabase db = getReadableDatabase();
@@ -163,21 +164,24 @@ public class ChatMessageDB extends DBConnection {
 			cursor = db.query(MESSAGE_TABLE, new String[]{MESSAGE_FROM, MESSAGE_TO,
 							MESSAGE_CONTENT, MESSAGE_ISREAD, MESSAGE_ISMULTICAST, MESSAGE_DATETIME, 
 							MESSAGE_FROM_ACCOUNT, MESSAGE_TO_ACCOUNT}, 
-							MESSAGE_FROM + "='" + source + "' or " + MESSAGE_TO + " = '" + source + "'", 
+							MESSAGE_FROM_ACCOUNT + "='" + source + "' or " + MESSAGE_TO_ACCOUNT + 
+							" = '" + source + "' and " + MESSAGE_FROM + "='" + name + "' or " + 
+							MESSAGE_TO + "='" + name + "'", 
 							null, null, null, MESSAGE_DATETIME, null);
-			cursor.moveToFirst();
-			for(int i = 0; i < cursor.getCount(); i++) {
-				ChatMessageBean chatMessage = new ChatMessageBean();
-				chatMessage.setFrom(cursor.getString(0));
-				chatMessage.setTo(cursor.getString(1));
-				chatMessage.setContent(cursor.getString(2));
-				chatMessage.setIsRead(cursor.getInt(3));
-				chatMessage.setIsMulticast(cursor.getInt(4));
-				chatMessage.setDate(new Date(cursor.getLong(5)));
-				chatMessage.setFromAccount(cursor.getString(6));
-				chatMessage.setToAccount(cursor.getString(7));
-				chatMessages.add(chatMessage);
-				cursor.moveToNext();
+			if(cursor.moveToFirst()){
+				for(int i = 0; i < cursor.getCount(); i++) {
+					ChatMessageBean chatMessage = new ChatMessageBean();
+					chatMessage.setFrom(cursor.getString(0));
+					chatMessage.setTo(cursor.getString(1));
+					chatMessage.setContent(cursor.getString(2));
+					chatMessage.setIsRead(cursor.getInt(3));
+					chatMessage.setIsMulticast(cursor.getInt(4));
+					chatMessage.setDate(new Date(cursor.getLong(5)));
+					chatMessage.setFromAccount(cursor.getString(6));
+					chatMessage.setToAccount(cursor.getString(7));
+					chatMessages.add(chatMessage);
+					cursor.moveToNext();
+				}
 			}
 			cursor.close();
 		} catch(Exception e) {
@@ -215,5 +219,41 @@ public class ChatMessageDB extends DBConnection {
 			e.printStackTrace();
 		}
 		return chatMessages;
+	}
+	
+	public boolean updateISREAD(ChatMessageBean message) {
+		try{
+			final SQLiteDatabase db = getReadableDatabase();
+			String sql = "UPDATE " + MESSAGE_TABLE + " SET " +
+						 MESSAGE_ISREAD + "=" + App.IS_READ_YES + 
+						 " WHERE " + 
+						MESSAGE_FROM +  "='" + message.getFrom() + "'" +
+						" AND " + 
+						MESSAGE_FROM_ACCOUNT + "='" + message.getFromAccount() + "'" + 
+						" AND " + 
+						MESSAGE_TO + "='" + message.getTo() + "'" + 
+						" AND " + 
+						MESSAGE_TO_ACCOUNT + "='"+ message.getToAccount() + "'" + 
+						" AND " +
+						MESSAGE_DATETIME + "=" + message.getDate().getTime() + ";";
+			db.execSQL(sql);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public int getMessageNumByDate(Date date) {
+		try{
+			final SQLiteDatabase db = getReadableDatabase();
+			String sql = "SELECT * FROM " + MESSAGE_TABLE + " WHERE " + MESSAGE_DATETIME + 
+						"=" + date.getTime() + ";";
+			Cursor cursor = db.rawQuery(sql, null);
+			return cursor.getCount();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
 	}
 }

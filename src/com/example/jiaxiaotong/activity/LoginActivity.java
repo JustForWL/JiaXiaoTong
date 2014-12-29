@@ -5,6 +5,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import com.example.jiaxiaotong.R;
 import com.example.jiaxiaotong.constants.AllTypes;
 import com.example.jiaxiaotong.constants.App;
+import com.example.jiaxiaotong.service.ReceiverService;
 import com.example.jiaxiaotong.utils.LoadingDialog;
 import com.example.jiaxiaotong.utils.Logger;
 import com.example.jiaxiaotong.utils.XMPPManager;
@@ -14,6 +15,7 @@ import com.example.jiaxiaotong.utils.T;
 
 
 import android.app.Activity;
+import android.content.Intent;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,8 +41,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener{
 			// TODO Auto-generated method stub
 			if (loadingDialog != null) {
 				loadingDialog.dismiss();
+				T.showShort(LoginActivity.this, "登录超时，请重试");
 			}
-			T.showShort(LoginActivity.this, "登录超时，请重试");
 		}
 		
 	};
@@ -80,9 +82,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener{
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		this.loadingDialog = null;
 		super.onDestroy();
 	}
 	
+	@Override
+	protected void onStop() {
+		this.loadingDialog = null;
+		super.onStop();
+	}
 	class LoginThread implements Runnable{
 		
 		private String userAccount;
@@ -97,38 +105,41 @@ public class LoginActivity extends BaseActivity implements OnClickListener{
 			// TODO Auto-generated method stub
 			if(!NetUtil.isNetConnected(LoginActivity.this)){
 				T.showShort(LoginActivity.this, R.string.net_disconnect_hint);
-				return;
-			}
-			handler.postDelayed(connectionTimeoutCallBack, App.TIME_DELAY_LOADING);
-			loadingDialog.show(getFragmentManager(), "LOAD_DIALOG");
-			loadingDialog.setCancelable(false);
-			try{
-				XMPPManager myConnection = XMPPManager.getInstance();
-				System.out.println(userPassword);
-				String loginState = myConnection.isLogin(userAccount, userPassword);
-				if(loginState.equals("SUCCESS")) {
-					SharePreferencesUtil.writeIsFirstLogin(LoginActivity.this);
-					SharePreferencesUtil.writeLoginAccount(LoginActivity.this, userAccount);
-					if(userAccount.startsWith("p")) {
-						new Thread(new ParseLoginParam()).start();
-						openActivity(ParentFrame.class);
-						SharePreferencesUtil.writeLoginType(LoginActivity.this, AllTypes.PARENTS.toString());
-					}else if(userAccount.startsWith("t")) {
-						openActivity(TeacherFrame.class);
-						SharePreferencesUtil.writeLoginType(LoginActivity.this, AllTypes.TEACHERS.toString());
-					}else if(userAccount.startsWith("h")){
-						openActivity(HeadTeacherFrame.class);
-						SharePreferencesUtil.writeLoginType(LoginActivity.this, AllTypes.HEADETEACHER.toString());
+				//return;
+			} else {
+				handler.postDelayed(connectionTimeoutCallBack, App.TIME_DELAY_LOADING);
+				loadingDialog.show(getFragmentManager(), "LOAD_DIALOG");
+				loadingDialog.setCancelable(false);
+				try{
+					XMPPManager myConnection = XMPPManager.getInstance();
+					String loginState = myConnection.isLogin(userAccount, userPassword);
+					if(loginState.equals("SUCCESS")) {
+						SharePreferencesUtil.writeIsFirstLogin(LoginActivity.this);
+						SharePreferencesUtil.writeLoginAccount(LoginActivity.this, userAccount);
+						if(userAccount.startsWith("p")) {
+							new Thread(new ParseLoginParam()).start();
+							openActivity(ParentFrame.class);
+							SharePreferencesUtil.writeLoginType(LoginActivity.this, AllTypes.PARENTS.toString());
+						}else if(userAccount.startsWith("t")) {
+							openActivity(TeacherFrame.class);
+							SharePreferencesUtil.writeLoginType(LoginActivity.this, AllTypes.TEACHERS.toString());
+						}else if(userAccount.startsWith("h")){
+							openActivity(HeadTeacherFrame.class);
+							SharePreferencesUtil.writeLoginType(LoginActivity.this, AllTypes.HEADETEACHER.toString());
+						}
+						Intent service = new Intent();
+						service.setAction("com.example.jiaxiaotong.service.ReceiverService");
+						startService(service);
+					 }else{
+						T.showLong(LoginActivity.this, "无效的用户名");
+						return;
 					}
-				 }else{
-					T.showLong(LoginActivity.this, "无效的用户名");
+					LoginActivity.this.finish();
+				} catch(Exception e){
+					e.printStackTrace();
+					Logger.i("登录失败");
 					return;
 				}
-				LoginActivity.this.finish();
-			} catch(Exception e){
-				e.printStackTrace();
-				Logger.i("登录失败");
-				return;
 			}
 		}
 		

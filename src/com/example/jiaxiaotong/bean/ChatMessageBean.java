@@ -23,7 +23,7 @@ public class ChatMessageBean {
 	private String content = null;
 	private int isRead;
 	private int isMulticast;
-	private String from_group = null;
+	private String from_group = "";
 	
 	public String getFrom() {
 		return from;
@@ -61,10 +61,10 @@ public class ChatMessageBean {
 	public void setIsMulticast(int isMulticast) {
 		this.isMulticast = isMulticast;
 	}
-	public String getFrom_group() {
+	public String getFromGroup() {
 		return from_group;
 	}
-	public void setFrom_group(String from_group) {
+	public void setFromGroup(String from_group) {
 		this.from_group = from_group;
 	}
 	public String getFromAccount() {

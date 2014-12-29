@@ -8,6 +8,8 @@ package com.example.jiaxiaotong.bean;
 public class ChildBean {
 	public String childName;
 	public String childIcon;
+	public String className = "";
+	
 	public String getChildName() {
 		return childName;
 	}
@@ -20,6 +22,11 @@ public class ChildBean {
 	public void setChildIcon(String childIcon) {
 		this.childIcon = childIcon;
 	}
-	
-	
+	public String getClassName() {
+		return className;
+	}
+	public void setClassName(String className) {
+		this.className = className;
+	}
+		
 }

@@ -11,6 +11,7 @@ public class ParentUserBean {
 	private String userName = null;
 	private String iconAddr = null;
 	private String classmate = null;
+	private String className = null;
 	
 	public String getUserAccount() {
 		return userAccount;
@@ -35,6 +36,12 @@ public class ParentUserBean {
 	}
 	public void setClassmate(String classmate) {
 		this.classmate = classmate;
+	}
+	public String getClassName() {
+		return className;
+	}
+	public void setClassName(String className) {
+		this.className = className;
 	}
 	
 }

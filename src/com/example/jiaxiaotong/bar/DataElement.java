@@ -2,7 +2,7 @@ package com.example.jiaxiaotong.bar;
 
 public class DataElement {  
     
-    public DataElement(String name, float value, int color) {  
+    public DataElement(String name, int value, int color) {  
         this.itemName = name;  
         this.value = value;  
         this.color = color;  
@@ -13,10 +13,10 @@ public class DataElement {
     public void setItemName(String itemName) {  
         this.itemName = itemName;  
     }  
-    public float getValue() {  
+    public int getValue() {  
         return value;  
     }  
-    public void setValue(float value) {  
+    public void setValue(int value) {  
         this.value = value;  
     }  
       
@@ -30,5 +30,5 @@ public class DataElement {
       
     private String itemName;  
     private int color;  
-    private float value;  
+    private int value;  
 }  
